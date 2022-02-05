@@ -1,0 +1,13 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Install the Webserver and Certbot packages
+    package:
+      name:
+        - "{{ webserver_package }}"
+        - "{{ certbot_package }}"
+      state: latest
+      update_cache: yes
