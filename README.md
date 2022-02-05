@@ -2,37 +2,38 @@
 
 Just to play around with **Ansible** stuff I'm trying out.
 
-## Some ad-hoc ansible commands
+### Some ad-hoc ansible commands
 
-'ansible all --key-file ~/.ssh/id_cursus -i inventory.cfg -m ping'
+> ansible all --key-file ~/.ssh/id_cursus -i inventory.cfg -m ping
 
-## settings as default value in ansible.cfg file
+### settings as default value in ansible.cfg file
 
-### this is not just a ping, but an actual connection with the servers
+This is not just a ping, but an actual connection with the servers.
 
-'ansible all -m ping'
+> ansible all -m ping
 
-### list all hosts in our inventory
+List all hosts in our inventory.
 
-'ansible all --list-hosts'
+> ansible all --list-hosts
 
-### gather all sorts of information from our servers
+Gather all sorts of information from our servers.
 
-'ansible all -m gather_facts'
+> ansible all -m gather_facts
 
-### same as above, but now we only look at one server
+Same as above, but now we only look at one server.
 
-'ansible all -m gather_facts --limit 192.168.122.147'
+> ansible all -m gather_facts --limit 192.168.122.147
 
-### update the local update cash: apt update
+Update the local update cash: apt update.
 
-'ansible all -m apt -a update_cache=true --become --ask-become-pass'
+> ansible all -m apt -a update_cache=true --become --ask-become-pass
 
-### install the package mc: apt install mc
+Install the package mc: apt install mc.
 
-'ansible all -m apt -a "name=mc state=latest" --become --ask-become-pass'
+> ansible all -m apt -a "name=mc state=latest" --become --ask-become-pass
 
-### install al availabe updates: apt dist-upgrade
+Install al availabe updates: apt dist-upgrade.
 
-'ansible all -m apt -a upgrade=dist --become --ask-become-pass'
+> ansible all -m apt -a upgrade=dist --become --ask-become-pass
 
+Nice!
