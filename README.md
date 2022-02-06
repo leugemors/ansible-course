@@ -36,4 +36,12 @@ Install al availabe updates: apt dist-upgrade.
 
 > ansible all -m apt -a upgrade=dist --become --ask-become-pass
 
+List all available tags.
+
+> ansible-playbook --list-tags site.yml
+
+Play with mutliple tags.
+
+> ansible-playbook --tags "database,wordpress" site.yml
+
 Nice!
