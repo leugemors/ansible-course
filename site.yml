@@ -1,0 +1,85 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: Install updates on Ubuntu
+    apt:
+      upgrade: dist 
+      update_cache: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: Install updates on Centos
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: Install the NGiNX and Certbot packages
+    apt:
+      name:
+        - nginx
+        - certbot
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: Install the Apache2 and Certbot ackage
+    dnf:
+      name:
+        - httpd
+        - certbot
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+- hosts: database_servers
+  become: true
+  tasks:
+
+  - name: Install MariaDB
+    apt:
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- hosts: file_servers
+  become: true
+  tasks:
+
+  - name: Install Samba
+    package:
+      name: samba
+      state: latest
+
+#############################################################################
+
+- hosts: workstations
+  become: true
+  tasks:
+
+  - name: Install unzip
+    package:
+      name: unzip
+
+  - name: Install Terraform
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_linux_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 755
+      owner: root
+      group: root
+
+  - name: Copy files to the server
+    tags: wordpress
+    copy:
+      src: default_site.html
+      dest: /var/www/html/index2.html
+      owner: www-data
+      group: www-data
+      mode: 644 
+
