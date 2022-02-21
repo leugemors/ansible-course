@@ -4,82 +4,45 @@
   become: true
   pre_tasks:
 
-  - name: Install updates on Ubuntu
-    apt:
-      upgrade: dist 
-      update_cache: yes
-    when: ansible_distribution in ["Debian", "Ubuntu"]
-
-  - name: Install updates on Centos
+  - name: update repo cache (centos)
+    tags: always
     dnf:
-      update_only: yes
       update_cache: yes
-    when: ansible_distribution == "CentOS"
+    changed_when: false
+    when: ansible_distribution == "centos"
 
-- hosts: web_servers
-  become: true
-  tasks:
-
-  - name: Install the NGiNX and Certbot packages
+  - name: update repo cache (ubuntu)
+    tags: always
     apt:
-      name:
-        - nginx
-        - certbot
-      state: latest
-    when: ansible_distribution in ["Debian", "Ubuntu"]
+      update_cache: yes
+    changed_when: false
+    when: ansible_distribution == "ubuntu"
 
-  - name: Install the Apache2 and Certbot ackage
-    dnf:
-      name:
-        - httpd
-        - certbot
-      state: latest
-    when: ansible_distribution == "CentOS"
 
-- hosts: database_servers
+- hosts: all
   become: true
-  tasks:
-
-  - name: Install MariaDB
-    apt:
-      name: mariadb-server
-      state: latest
-    when: ansible_distribution in ["Debian", "Ubuntu"]
-
-- hosts: file_servers
-  become: true
-  tasks:
-
-  - name: Install Samba
-    package:
-      name: samba
-      state: latest
-
-#############################################################################
+  roles:
+    - base
 
 - hosts: workstations
   become: true
-  tasks:
+  roles:
+    - workstations
 
-  - name: Install unzip
-    package:
-      name: unzip
 
-  - name: Install Terraform
-    unarchive:
-      src: https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_linux_amd64.zip
-      dest: /usr/local/bin
-      remote_src: yes
-      mode: 755
-      owner: root
-      group: root
+- hosts: web_servers
+  become: true
+  roles:
+    - web_servers
 
-  - name: Copy files to the server
-    tags: wordpress
-    copy:
-      src: default_site.html
-      dest: /var/www/html/index2.html
-      owner: www-data
-      group: www-data
-      mode: 644 
 
+- hosts: db_servers
+  become: true
+  roles:
+    - db_servers
+
+
+- hosts: file_servers
+  become: true
+  roles:
+    - file_servers
